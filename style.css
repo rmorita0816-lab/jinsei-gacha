@@ -101,3 +101,29 @@ button:active{
     80%{color:cyan;}
     100%{color:violet;}
 }
+#titleResult{
+    margin-top:20px;
+    font-size:28px;
+    font-weight:bold;
+    text-align:center;
+    min-height:40px;
+}
+
+.title-r{
+    color:white;
+}
+
+.title-sr{
+    color:#00e5ff;
+    text-shadow:0 0 10px #00e5ff;
+}
+
+.title-ssr{
+    color:gold;
+    text-shadow:0 0 20px gold;
+}
+
+.title-god{
+    font-size:34px;
+    animation:rainbow 2s linear infinite;
+}
