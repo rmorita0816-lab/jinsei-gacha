@@ -142,3 +142,12 @@ switch(luck){
         break;
 
 }
+document.body.classList.remove("ssr-mode","god-mode");
+
+if(luck==="SSR"){
+    document.body.classList.add("ssr-mode");
+}
+
+if(luck==="GOD"){
+    document.body.classList.add("god-mode");
+}
