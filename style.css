@@ -127,3 +127,34 @@ button:active{
     font-size:34px;
     animation:rainbow 2s linear infinite;
 }
+/* ===== レア背景 ===== */
+
+body.ssr-mode{
+    background:linear-gradient(135deg,#1a1a1a,#8b6f00);
+    transition:0.5s;
+}
+
+body.god-mode{
+    background:linear-gradient(
+        -45deg,
+        red,
+        orange,
+        yellow,
+        lime,
+        cyan,
+        blue,
+        violet
+    );
+
+    background-size:400% 400%;
+
+    animation:rainbowBg 5s infinite;
+}
+
+@keyframes rainbowBg{
+
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+
+}
