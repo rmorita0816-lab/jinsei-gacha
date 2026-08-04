@@ -90,3 +90,16 @@ function random(list){
 function wait(ms){
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+async function slotEffect(element, list, times = 12) {
+
+  for(let i = 0; i < times; i++){
+
+    element.textContent = random(list);
+
+    await wait(70);
+
+  }
+
+  return random(list);
+
+}
