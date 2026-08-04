@@ -1,9 +1,5 @@
 const birthplace = [
-  "北海道",
-  "東京",
-  "大阪",
-  "福岡",
-  "沖縄"
+  "北海道", "東京", "大阪", "福岡", "沖縄"
 ];
 
 const jobs = [
@@ -11,15 +7,20 @@ const jobs = [
   "ゲームクリエイター",
   "YouTuber",
   "漁師",
-  "医者"
+  "医者",
+  "宇宙飛行士",
+  "魔王",
+  "ニート王"
 ];
 
 const incomes = [
+  "3円",
   "250万円",
   "420万円",
   "680万円",
   "1200万円",
-  "1億円"
+  "1億円",
+  "100億円"
 ];
 
 const loves = [
@@ -27,10 +28,12 @@ const loves = [
   "25歳で結婚",
   "30歳で結婚",
   "運命の人と出会う",
-  "恋愛大成功"
+  "AIと結婚",
+  "世界一モテる"
 ];
 
 const lucks = [
+  "R",
   "R",
   "R",
   "SR",
@@ -39,19 +42,39 @@ const lucks = [
 ];
 
 const button = document.getElementById("gachaBtn");
+const result = document.getElementById("result");
 
-button.addEventListener("click", () => {
+button.addEventListener("click", async () => {
 
-  document.getElementById("result").innerHTML = `
+  button.disabled = true;
+
+  result.innerHTML = `
+    <h2>🎰 ガチャを回しています...</h2>
+    <h1 id="count">3</h1>
+  `;
+
+  for(let i=3;i>=1;i--){
+    document.getElementById("count").textContent = i;
+    await wait(1000);
+  }
+
+  const luck = random(lucks);
+
+  result.innerHTML = `
     <p>👶 出身：${random(birthplace)}</p>
     <p>💼 職業：${random(jobs)}</p>
     <p>💰 年収：${random(incomes)}</p>
     <p>💕 恋愛：${random(loves)}</p>
-    <p>🍀 運勢：${random(lucks)}</p>
+    <h2>🍀 ${luck}</h2>
   `;
 
+  button.disabled = false;
 });
 
 function random(list){
-  return list[Math.floor(Math.random() * list.length)];
+  return list[Math.floor(Math.random()*list.length)];
+}
+
+function wait(ms){
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
