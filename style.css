@@ -69,3 +69,35 @@ button:active{
     line-height:2;
     font-size:20px;
 }
+/* ===== レア演出 ===== */
+
+.ssr{
+    color:#FFD700;
+    text-shadow:0 0 15px gold;
+    animation: glow 1s infinite alternate;
+}
+
+.god{
+    animation: rainbow 2s linear infinite;
+    font-size:32px;
+    font-weight:bold;
+    text-shadow:0 0 20px white;
+}
+
+@keyframes glow{
+    from{
+        text-shadow:0 0 10px gold;
+    }
+    to{
+        text-shadow:0 0 30px gold;
+    }
+}
+
+@keyframes rainbow{
+    0%{color:red;}
+    20%{color:orange;}
+    40%{color:yellow;}
+    60%{color:lime;}
+    80%{color:cyan;}
+    100%{color:violet;}
+}
