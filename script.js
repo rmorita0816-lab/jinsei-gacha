@@ -115,3 +115,30 @@ async function slotEffect(element, list, times = 12) {
   return random(list);
 
 }
+const title = document.getElementById("titleResult");
+
+title.className = "";
+
+switch(luck){
+
+    case "R":
+        title.textContent = "🌱 普通の人生";
+        title.classList.add("title-r");
+        break;
+
+    case "SR":
+        title.textContent = "😊 勝ち組";
+        title.classList.add("title-sr");
+        break;
+
+    case "SSR":
+        title.textContent = "👑 超勝ち組";
+        title.classList.add("title-ssr");
+        break;
+
+    case "GOD":
+        title.textContent = "🌈 神の人生";
+        title.classList.add("title-god");
+        break;
+
+}
