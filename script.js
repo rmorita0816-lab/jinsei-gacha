@@ -59,7 +59,19 @@ button.addEventListener("click", async () => {
   }
 
   const luck = random(lucks);
+let className = "";
 
+if(luck === "SSR"){
+    className = "ssr";
+}
+
+if(luck === "GOD"){
+    className = "god";
+
+    if(navigator.vibrate){
+        navigator.vibrate([300,150,300]);
+    }
+}
   result.innerHTML = `
     <p>👶 出身：${random(birthplace)}</p>
     <p>💼 職業：${random(jobs)}</p>
