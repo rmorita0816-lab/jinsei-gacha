@@ -77,7 +77,7 @@ if(luck === "GOD"){
     <p>💼 職業：${random(jobs)}</p>
     <p>💰 年収：${random(incomes)}</p>
     <p>💕 恋愛：${random(loves)}</p>
-    <<h2 class="${className}">🍀 ${luck}</h2>
+    <h2 class="${className}">🍀 ${luck}</h2>
   `;
 
   button.disabled = false;
