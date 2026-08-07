@@ -158,3 +158,24 @@ body.god-mode{
 100%{background-position:0% 50%;}
 
 }
+.share-area {
+  margin-top: 25px;
+  text-align: center;
+}
+
+#shareBtn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(90deg, #00c6ff, #7b2cff);
+  box-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
+  cursor: pointer;
+}
+
+#shareBtn:active {
+  transform: scale(0.97);
+}
