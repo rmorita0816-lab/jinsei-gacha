@@ -274,3 +274,38 @@ async function slotEffect(element, list, times) {
 
   return random(list);
 }
+const shareBtn = document.getElementById("shareBtn");
+
+shareBtn.addEventListener("click", async () => {
+
+  const shareText =
+`🎰 人生ガチャの結果！
+
+👶 出身：${birth.textContent}
+💼 職業：${job.textContent}
+💰 年収：${income.textContent}
+💕 恋愛：${love.textContent}
+
+🍀 人生ランク：${luckText.textContent}
+🏆 ${title.textContent}
+
+🎰 あなたも人生ガチャを回してみよう！`;
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: "🎰 人生ガチャ",
+        text: shareText
+      });
+    } catch (error) {
+      console.log("シェアをキャンセルしました");
+    }
+  } else {
+    try {
+      await navigator.clipboard.writeText(shareText);
+      alert("結果をコピーしました！📋");
+    } catch (error) {
+      alert(shareText);
+    }
+  }
+});
