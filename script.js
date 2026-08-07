@@ -47,6 +47,8 @@ const lucks = [
 
 const button = document.getElementById("gachaBtn");
 const result = document.getElementById("result");
+const titleResult = document.getElementById("titleResult");
+const shareBtn = document.getElementById("shareBtn");
 
 button.addEventListener("click", async () => {
 
@@ -79,189 +81,102 @@ button.addEventListener("click", async () => {
   }
 
   result.innerHTML = `
+    <h2 class="${className}">
+      🍀 <span id="luckText">${luck}</span>
+    </h2>
+
     <p>👶 出身：<span id="birth"></span></p>
     <p>💼 職業：<span id="job"></span></p>
     <p>💰 年収：<span id="income"></span></p>
     <p>💕 恋愛：<span id="love"></span></p>
 
-    <h2 class="${className}">
-      🍀 <span id="luckText"></span>
-    </h2>
+    <div class="lifeRank">
+      🏆 人生ランク
+      <strong id="rank"></strong>
+    </div>
 
-    <h2 id="title"></h2>
+    <div class="lifeScore">
+      ⭐ 人生スコア：
+      <strong id="score"></strong> / 100
+    </div>
 
-    <div id="lifeRank"></div>
+    <div id="message"></div>
+
+    <button id="shareBtn">
+      📤 この結果をシェア
+    </button>
   `;
 
   const birth = document.getElementById("birth");
   const job = document.getElementById("job");
   const income = document.getElementById("income");
   const love = document.getElementById("love");
-  const luckText = document.getElementById("luckText");
-  const title = document.getElementById("title");
-  const lifeRank = document.getElementById("lifeRank");
+  const rank = document.getElementById("rank");
+  const scoreText = document.getElementById("score");
+  const message = document.getElementById("message");
+  const newShareBtn = document.getElementById("shareBtn");
 
-  birth.textContent = await slotEffect(birth, birthplace, 12);
-  job.textContent = await slotEffect(job, jobs, 12);
-  income.textContent = await slotEffect(income, incomes, 12);
-  love.textContent = await slotEffect(love, loves, 12);
+  const birthResult = await slotEffect(
+    birth,
+    birthplace,
+    15
+  );
 
-  luckText.textContent = luck;
+  const jobResult = await slotEffect(
+    job,
+    jobs,
+    15
+  );
 
-  // --------------------
-  // 人生スコア
-  // --------------------
+  const incomeResult = await slotEffect(
+    income,
+    incomes,
+    15
+  );
 
-  let score = 0;
+  const loveResult = await slotEffect(
+    love,
+    loves,
+    15
+  );
 
-  // 年収ポイント
-  if (income.textContent === "3万円") score += 5;
-  if (income.textContent === "250万円") score += 20;
-  if (income.textContent === "420万円") score += 35;
-  if (income.textContent === "680万円") score += 50;
-  if (income.textContent === "1200万円") score += 65;
-  if (income.textContent === "1億円") score += 85;
-  if (income.textContent === "100億円") score += 100;
+  birth.textContent = birthResult;
+  job.textContent = jobResult;
+  income.textContent = incomeResult;
+  love.textContent = loveResult;
 
-  // 職業ポイント
-  if (job.textContent === "会社員") score += 5;
-  if (job.textContent === "ゲームクリエイター") score += 15;
-  if (job.textContent === "YouTuber") score += 20;
-  if (job.textContent === "漁師") score += 15;
-  if (job.textContent === "医者") score += 25;
-  if (job.textContent === "宇宙飛行士") score += 30;
-  if (job.textContent === "魔王") score += 30;
-  if (job.textContent === "ニート王") score += 10;
+  const score = getScore(luck);
+  const lifeRank = getRank(score);
 
-  // 恋愛ポイント
-  if (love.textContent === "独身") score += 5;
-  if (love.textContent === "25歳で結婚") score += 15;
-  if (love.textContent === "30歳で結婚") score += 15;
-  if (love.textContent === "運命の人と出会う") score += 25;
-  if (love.textContent === "AIと結婚") score += 20;
-  if (love.textContent === "世界一モテる") score += 30;
+  rank.textContent = lifeRank;
+  scoreText.textContent = score;
 
-  // レア度ポイント
-  if (luck === "R") score += 5;
-  if (luck === "SR") score += 15;
-  if (luck === "SSR") score += 30;
-  if (luck === "GOD") score += 50;
+  message.textContent = getMessage(lifeRank);
 
-  // 最大100点に調整
-  score = Math.min(score, 100);
-
-  // --------------------
-  // ランク決定
-  // --------------------
-
-  let rank = "";
-  let rankEmoji = "";
-  let nickname = "";
-
-  if (score >= 95) {
-    rank = "SSS";
-    rankEmoji = "🌈";
-    nickname = "✨ 神に選ばれし者";
-  } else if (score >= 85) {
-    rank = "SS";
-    rankEmoji = "👑";
-    nickname = "⚡ 人生の勝者";
-  } else if (score >= 70) {
-    rank = "S";
-    rankEmoji = "🔥";
-    nickname = "🚀 運命を掴みし者";
-  } else if (score >= 55) {
-    rank = "A";
-    rankEmoji = "⭐";
-    nickname = "😎 かなり順調な人生";
-  } else if (score >= 40) {
-    rank = "B";
-    rankEmoji = "😊";
-    nickname = "🌱 これから伸びる人生";
-  } else {
-    rank = "C";
-    rankEmoji = "🍀";
-    nickname = "🎲 波乱万丈の人生";
-  }
-
-  // --------------------
-  // レアタイトル
-  // --------------------
-
-  title.className = "";
-
-  switch (luck) {
-
-    case "R":
-      title.textContent = "🌱 普通の人生";
-      title.classList.add("title-r");
-      break;
-
-    case "SR":
-      title.textContent = "😊 勝ち組";
-      title.classList.add("title-sr");
-      break;
-
-    case "SSR":
-      title.textContent = "👑 超勝ち組";
-      title.classList.add("title-ssr");
-      document.body.classList.add("ssr-mode");
-      break;
-
-    case "GOD":
-      title.textContent = "🌈 神の人生";
-      title.classList.add("title-god");
-      document.body.classList.add("god-mode");
-      break;
-  }
-
-  // --------------------
-  // 人生ランク表示
-  // --------------------
-
-  lifeRank.innerHTML = `
-    <div class="life-rank">
-      <h2>🏆 人生ランク</h2>
-
-      <div class="rank-big">
-        ${rankEmoji} ${rank}
-      </div>
-
-      <div class="score">
-        ⭐ 人生スコア：${score} / 100
-      </div>
-
-      <div class="nickname">
-        🎭 ${nickname}
-      </div>
-    </div>
-  `;
+  setupShare(
+    newShareBtn,
+    birthResult,
+    jobResult,
+    incomeResult,
+    loveResult,
+    luck,
+    lifeRank,
+    score
+  );
 
   button.disabled = false;
 });
 
-
-// ====================
-// ランダム
-// ====================
 
 function random(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
 
-// ====================
-// 待機
-// ====================
-
 function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-
-// ====================
-// スロット演出
-// ====================
 
 async function slotEffect(element, list, times) {
 
@@ -274,29 +189,124 @@ async function slotEffect(element, list, times) {
 
   return random(list);
 }
-const shareBtn = document.getElementById("shareBtn");
 
-shareBtn.addEventListener("click", async () => {
-  const shareText = `🎰 人生ガチャの結果！
 
-👶 出身：${birth.textContent}
-💼 職業：${job.textContent}
-💰 年収：${income.textContent}
-💕 恋愛：${love.textContent}
-🍀 運勢：${luckText.textContent}
+function getScore(luck) {
 
-🎰 人生ガチャ`;
+  switch (luck) {
 
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: "🎰 人生ガチャ",
-        text: shareText
-      });
-    } catch (error) {
-      console.log("シェアをキャンセルしました");
-    }
-  } else {
-    alert(shareText);
+    case "GOD":
+      return 100;
+
+    case "SSR":
+      return Math.floor(Math.random() * 10) + 90;
+
+    case "SR":
+      return Math.floor(Math.random() * 15) + 70;
+
+    default:
+      return Math.floor(Math.random() * 40) + 30;
   }
-});
+}
+
+
+function getRank(score) {
+
+  if (score >= 98) return "SSS";
+  if (score >= 90) return "SS";
+  if (score >= 80) return "S";
+  if (score >= 70) return "A";
+  if (score >= 60) return "B";
+  if (score >= 45) return "C";
+
+  return "D";
+}
+
+
+function getMessage(rank) {
+
+  switch (rank) {
+
+    case "SSS":
+      return "🌈✨ 神に選ばれし者";
+
+    case "SS":
+      return "👑✨ 超勝ち組人生";
+
+    case "S":
+      return "🔥✨ 勝ち組人生";
+
+    case "A":
+      return "😎✨ かなり良い人生";
+
+    case "B":
+      return "😊✨ 平均以上の人生";
+
+    case "C":
+      return "🍀✨ これからが本番";
+
+    default:
+      return "💪✨ ここから人生逆転！";
+  }
+}
+
+
+function setupShare(
+  shareButton,
+  birth,
+  job,
+  income,
+  love,
+  luck,
+  rank,
+  score
+) {
+
+  shareButton.addEventListener("click", async () => {
+
+    const text = `
+🎰 人生ガチャの結果！
+
+👶 出身：${birth}
+💼 職業：${job}
+💰 年収：${income}
+💕 恋愛：${love}
+
+🍀 運勢：${luck}
+
+🏆 人生ランク：${rank}
+⭐ 人生スコア：${score} / 100
+
+✨ あなたも人生ガチャを回してみて！
+`;
+
+    if (navigator.share) {
+
+      try {
+
+        await navigator.share({
+          title: "🎰 人生ガチャの結果！",
+          text: text
+        });
+
+      } catch (error) {
+
+        console.log("シェアをキャンセルしました");
+
+      }
+
+    } else {
+
+      try {
+
+        await navigator.clipboard.writeText(text);
+        alert("結果をコピーしました！📋");
+
+      } catch (error) {
+
+        alert(text);
+
+      }
+    }
+  });
+}
