@@ -102,9 +102,7 @@ button.addEventListener("click", async () => {
 
     <div id="message"></div>
 
-    <button id="shareBtn">
-      📤 この結果をシェア
-    </button>
+   
   `;
 
   const birth = document.getElementById("birth");
