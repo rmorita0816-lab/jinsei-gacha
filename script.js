@@ -359,6 +359,10 @@ function showResult(data) {
       <strong>${data.score}</strong> / 100
     </div>
 
+    <div class="life-rarity-count">
+  🎯 あなたは ${getOneIn(data)} 人に1人の人生！
+</div>
+
     <div class="life-message">
       ${data.message}
     </div>
@@ -611,3 +615,24 @@ result.innerHTML = `
     あなたの人生を占おう！
   </div>
 `;
+
+function getOneIn(data) {
+
+  if (data.type === "GOD") {
+    return "1,000,000";
+  }
+
+  if (data.type === "WIN") {
+    return randomNumber(500, 5000).toLocaleString();
+  }
+
+  if (data.type === "SURPRISE") {
+    return randomNumber(1000, 15000).toLocaleString();
+  }
+
+  if (data.type === "FUNNY") {
+    return randomNumber(300, 30000).toLocaleString();
+  }
+
+  return randomNumber(100, 10000).toLocaleString();
+}
