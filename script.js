@@ -1,204 +1,84 @@
-/* ========================================
-   🎰 人生ガチャ
-   ======================================== */
-
-const birthplace = [
+const birthplaces = [
   "北海道",
   "東京都",
   "大阪府",
   "福岡県",
   "沖縄県",
-  "京都府",
-  "愛知県",
   "神奈川県",
+  "愛知県",
   "宮城県",
-  "海外"
+  "京都府",
+  "青森県"
 ];
 
 const jobs = [
   "会社員",
-  "フリーランス",
+  "ゲームクリエイター",
   "YouTuber",
-  "公務員",
   "医者",
   "教師",
-  "エンジニア",
-  "社長",
-  "芸能人",
+  "芸術家",
+  "宇宙飛行士",
+  "経営者",
+  "モデル",
   "ニート"
 ];
 
 const incomes = [
-  "300万円",
-  "450万円",
-  "520万円",
+  "37万円",
+  "250万円",
+  "420万円",
   "680万円",
-  "780万円",
   "1200万円",
   "1億円",
-  "100万円",
-  "250万円",
-  "5000万円"
+  "100億円"
 ];
 
 const loves = [
-  "独身",
+  "普通の恋愛",
   "25歳で結婚",
   "30歳で結婚",
-  "35歳で結婚",
   "運命の人と出会う",
-  "恋愛充実",
   "大恋愛",
-  "結婚しない人生"
+  "一生独身",
+  "AIと結婚する"
 ];
 
 const lucks = [
   "普通",
   "ちょっと幸運",
   "かなり幸運",
-  "超幸運",
   "激レア",
-  "神クラス"
+  "超激レア",
+  "SSR",
+  "SR",
+  "S",
+  "SSS",
+  "GOD"
 ];
 
 const gachaBtn = document.getElementById("gachaBtn");
 const result = document.getElementById("result");
 const titleResult = document.getElementById("titleResult");
-const shareBtn = document.getElementById("shareBtn");
 
-let lastResult = null;
-
-
-/* ========================================
-   🎲 ランダム
-======================================== */
-
-function random(list) {
-  return list[Math.floor(Math.random() * list.length)];
-}
+let button = gachaBtn;
 
 
-/* ========================================
-   ⏳ 待機
-======================================== */
+/* =========================
+   ガチャ開始
+========================= */
 
-function wait(ms) {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms);
-  });
-}
-
-
-/* ========================================
-   ✨ レア度
-======================================== */
-
-function getRarity() {
-  const r = Math.random();
-
-  if (r < 0.02) return "GOD";
-  if (r < 0.08) return "SSR";
-  if (r < 0.25) return "SR";
-
-  return "R";
-}
-
-
-/* ========================================
-   🏆 スコア
-======================================== */
-
-function getScore(rarity) {
-  switch (rarity) {
-    case "GOD":
-      return 100;
-
-    case "SSR":
-      return Math.floor(Math.random() * 16) + 85;
-
-    case "SR":
-      return Math.floor(Math.random() * 21) + 65;
-
-    default:
-      return Math.floor(Math.random() * 50) + 20;
-  }
-}
-
-
-/* ========================================
-   🏆 人生ランク
-======================================== */
-
-function getRank(score) {
-  if (score >= 95) return "S+";
-  if (score >= 85) return "S";
-  if (score >= 75) return "A";
-  if (score >= 60) return "B";
-  if (score >= 40) return "C";
-
-  return "D";
-}
-
-
-/* ========================================
-   🌈 人生メッセージ
-======================================== */
-
-function getMessage(score, rarity) {
-
-  if (rarity === "GOD") {
-    return "🌈✨ 神に選ばれし者";
-  }
-
-  if (score >= 85) {
-    return "😎✨ かなり良い人生";
-  }
-
-  if (score >= 70) {
-    return "😊✨ 幸せな人生";
-  }
-
-  if (score >= 50) {
-    return "💪✨ ここから人生逆転！";
-  }
-
-  return "🔥✨ まだまだこれから！";
-}
-
-
-/* ========================================
-   🎨 レア度クラス
-======================================== */
-
-function getRarityClass(rarity) {
-
-  switch (rarity) {
-    case "GOD":
-      return "gacha-god";
-
-    case "SSR":
-      return "gacha-ssr";
-
-    case "SR":
-      return "gacha-sr";
-
-    default:
-      return "gacha-r";
-  }
-}
-
-
-/* ========================================
-   🎰 ガチャ本体
-======================================== */
+button.addEventListener("click", playGacha);
 
 async function playGacha() {
 
-  gachaBtn.disabled = true;
+  if (button.disabled) return;
 
-  if (shareBtn) {
-    shareBtn.style.display = "none";
-  }
+  button.disabled = true;
+
+  result.classList.remove("god-result");
+
+  titleResult.textContent = "🎰 ガチャ中…";
 
   const oldReroll = document.getElementById("rerollBtn");
 
@@ -206,90 +86,74 @@ async function playGacha() {
     oldReroll.remove();
   }
 
-  result.classList.remove(
-    "gacha-god",
-    "gacha-ssr",
-    "gacha-sr",
-    "gacha-r"
-  );
+  const oldShare = document.getElementById("shareBtn");
 
-  titleResult.textContent = "🎰 ガチャ中……";
+  if (oldShare) {
+    oldShare.style.display = "none";
+  }
 
-  result.innerHTML = `
-    <div style="
-      text-align:center;
-      font-size:32px;
-      font-weight:bold;
-      margin:25px 0;
-    ">
-      🎰
-      <div id="gachaCount">3</div>
-    </div>
-  `;
-
-  /* カウントダウン */
+  /* ガチャ演出 */
 
   for (let i = 3; i >= 1; i--) {
 
-    const count = document.getElementById("gachaCount");
+    titleResult.textContent = i;
 
-    if (count) {
-      count.textContent = i;
-    }
+    await wait(500);
 
-    await wait(700);
   }
 
-  /* 結果生成 */
+  titleResult.textContent = "🎰 結果発表！";
 
-  const birth = random(birthplace);
+  await wait(700);
+
+
+  /* =========================
+     ランダム結果
+  ========================= */
+
+  const birth = random(birthplaces);
   const job = random(jobs);
   const income = random(incomes);
   const love = random(loves);
   const luck = random(lucks);
 
-  const rarity = getRarity();
-  const score = getScore(rarity);
-  const rank = getRank(score);
-  const message = getMessage(score, rarity);
+  const rank = getRank(luck);
+  const score = getScore(luck);
+  const rarity = getRarity(luck);
+  const message = getMessage(luck);
 
-  lastResult = {
-    birth,
-    job,
-    income,
-    love,
-    luck,
-    rarity,
-    score,
-    rank,
-    message
-  };
 
-  const rarityClass = getRarityClass(rarity);
+  /* =========================
+     結果表示
+  ========================= */
 
-  /* レア演出 */
+  let luckClass = "gacha-r";
 
-  result.classList.add(rarityClass);
-
-  if (navigator.vibrate) {
-    if (rarity === "GOD") {
-      navigator.vibrate([150, 80, 150, 80, 300]);
-    } else {
-      navigator.vibrate(100);
-    }
+  if (luck === "SR") {
+    luckClass = "gacha-sr";
   }
 
-  /* 結果表示 */
+  if (luck === "SSR") {
+    luckClass = "gacha-ssr";
+  }
 
-  titleResult.textContent = "";
+  if (luck === "SSS") {
+    luckClass = "gacha-sss";
+  }
+
+  if (luck === "GOD") {
+    luckClass = "gacha-god";
+    result.classList.add("god-result");
+  }
 
   result.innerHTML = `
-    <div class="rarity-box">
-      🍀 <span>${rarity}</span>
+
+    <div class="rarity-box ${luckClass}">
+      🍀 ${luck}
     </div>
 
-    <div class="life-message">
-      ${rarity === "GOD" ? "🔥 激レア" : ""}
+    <div class="rarity-text">
+      ${rarity}
     </div>
 
     <p class="result-line">👶 出身：${birth}</p>
@@ -313,244 +177,396 @@ async function playGacha() {
     <div class="life-message">
       ${message}
     </div>
+
   `;
 
-  /* 共有ボタン */
+
+  /* =========================
+     シェアボタン表示
+  ========================= */
+
+  const shareBtn = document.getElementById("shareBtn");
 
   if (shareBtn) {
-    shareBtn.style.display = "block";
+    shareBtn.style.display = "";
+    shareBtn.textContent = "📸 この結果をシェア";
   }
 
-  /* もう一回ボタン */
+
+  /* =========================
+     もう一回ガチャ
+  ========================= */
 
   createRerollButton();
 
-  gachaBtn.disabled = false;
+
+  button.disabled = false;
 }
 
 
-/* ========================================
-   🔄 もう一回ガチャ
-======================================== */
+/* =========================
+   もう一回ガチャ
+========================= */
 
 function createRerollButton() {
 
-  const oldButton = document.getElementById("rerollBtn");
+  let rerollBtn = document.getElementById("rerollBtn");
 
-  if (oldButton) {
-    oldButton.remove();
+  if (rerollBtn) {
+    rerollBtn.remove();
   }
 
-  const rerollBtn = document.createElement("button");
+  rerollBtn = document.createElement("button");
 
   rerollBtn.id = "rerollBtn";
   rerollBtn.className = "reroll-button";
   rerollBtn.textContent = "🎰 もう一回ガチャ";
 
+  const shareBtn = document.getElementById("shareBtn");
+
   if (shareBtn) {
     shareBtn.insertAdjacentElement("afterend", rerollBtn);
   } else {
-    result.insertAdjacentElement("afterend", rerollBtn);
+    result.appendChild(rerollBtn);
   }
 
   rerollBtn.addEventListener("click", playGacha);
 }
 
 
-/* ========================================
-   📸 html2canvas読み込み
-======================================== */
+/* =========================
+   シェア
+========================= */
 
-function loadHtml2Canvas() {
-
-  return new Promise((resolve, reject) => {
-
-    if (window.html2canvas) {
-      resolve();
-      return;
-    }
-
-    const script = document.createElement("script");
-
-    script.src =
-      "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
-
-    script.onload = () => resolve();
-
-    script.onerror = () => reject(
-      new Error("html2canvasの読み込みに失敗しました")
-    );
-
-    document.head.appendChild(script);
-  });
-}
-
-
-/* ========================================
-   📸 結果を画像化
-======================================== */
-
-async function createResultImage() {
-
-  await loadHtml2Canvas();
-
-  const target = document.querySelector(".container");
-
-  if (!target) {
-    throw new Error("結果画面が見つかりません");
-  }
-
-  const canvas = await html2canvas(target, {
-    backgroundColor: "#111111",
-    scale: 2,
-    useCORS: true
-  });
-
-  return new Promise((resolve, reject) => {
-
-    canvas.toBlob(blob => {
-
-      if (blob) {
-        resolve(blob);
-      } else {
-        reject(
-          new Error("画像の作成に失敗しました")
-        );
-      }
-
-    }, "image/png");
-  });
-}
-
-
-/* ========================================
-   📤 結果を画像でシェア
-======================================== */
-
-async function shareResult() {
-
-  if (!lastResult) {
-    alert("まずガチャを回してね🎰");
-    return;
-  }
-
-  const originalText = shareBtn.textContent;
-
-  shareBtn.disabled = true;
-  shareBtn.textContent = "📸 画像を作成中…";
-
-  try {
-
-    const blob = await createResultImage();
-
-    const file = new File(
-      [blob],
-      "人生ガチャ_結果.png",
-      {
-        type: "image/png"
-      }
-    );
-
-    /* iPhoneなどの画像共有 */
-
-    if (
-      navigator.share &&
-      navigator.canShare &&
-      navigator.canShare({
-        files: [file]
-      })
-    ) {
-
-      await navigator.share({
-        title: "🎰 人生ガチャの結果！",
-        text: "人生ガチャを回してみた！",
-        files: [file]
-      });
-
-    } else {
-
-      /* 画像共有に対応していない場合 */
-
-      const url = URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-
-      link.href = url;
-      link.download = "人生ガチャ_結果.png";
-
-      document.body.appendChild(link);
-
-      link.click();
-
-      link.remove();
-
-      setTimeout(() => {
-        URL.revokeObjectURL(url);
-      }, 1000);
-
-      alert(
-        "📸 結果画像を作ったよ！\n\n" +
-        "写真やファイルに保存してシェアしてね✨"
-      );
-    }
-
-  } catch (error) {
-
-    console.error(error);
-
-    /* 共有キャンセルの場合は何もしない */
-
-    if (
-      error &&
-      error.name === "AbortError"
-    ) {
-      return;
-    }
-
-    alert(
-      "画像の作成に失敗しました💦\n" +
-      "もう一度試してみてね！"
-    );
-
-  } finally {
-
-    shareBtn.disabled = false;
-    shareBtn.textContent = originalText;
-  }
-}
-
-
-/* ========================================
-   🎯 ボタン設定
-======================================== */
-
-gachaBtn.addEventListener(
-  "click",
-  playGacha
-);
+const shareBtn = document.getElementById("shareBtn");
 
 if (shareBtn) {
 
-  shareBtn.addEventListener(
-    "click",
-    shareResult
-  );
+  shareBtn.addEventListener("click", async () => {
 
-  shareBtn.style.display = "none";
+    shareBtn.disabled = true;
+
+    /*
+     * ここでは
+     * 「画像を作成中…」を表示しない。
+     *
+     * ボタンを押した瞬間に画像生成する。
+     */
+
+    const resultArea = document.getElementById("result");
+
+    if (!resultArea) {
+      shareBtn.disabled = false;
+      return;
+    }
+
+    try {
+
+      /* html2canvas が読み込まれているか確認 */
+
+      if (typeof html2canvas === "undefined") {
+
+        alert(
+          "画像作成機能の読み込みに失敗しました💦\nページを再読み込みしてもう一度試してね！"
+        );
+
+        shareBtn.disabled = false;
+        return;
+      }
+
+
+      /* ボタンを一時的に隠す */
+
+      const rerollBtn = document.getElementById("rerollBtn");
+
+      if (rerollBtn) {
+        rerollBtn.style.display = "none";
+      }
+
+      shareBtn.style.display = "none";
+
+
+      /* =========================
+         結果画像を作成
+      ========================= */
+
+      const canvas = await html2canvas(resultArea, {
+
+        backgroundColor: "#111111",
+
+        scale: 2,
+
+        useCORS: true,
+
+        logging: false
+
+      });
+
+
+      /* ボタンを戻す */
+
+      shareBtn.style.display = "";
+
+      shareBtn.textContent = "📸 この結果をシェア";
+
+      if (rerollBtn) {
+        rerollBtn.style.display = "";
+      }
+
+
+      canvas.toBlob(async (blob) => {
+
+        if (!blob) {
+
+          alert("画像の作成に失敗しました💦");
+
+          shareBtn.disabled = false;
+
+          return;
+        }
+
+
+        const file = new File(
+          [blob],
+          "人生ガチャ_結果.png",
+          {
+            type: "image/png"
+          }
+        );
+
+
+        /* =========================
+           iPhoneなどで画像共有
+        ========================= */
+
+        if (
+          navigator.share &&
+          navigator.canShare &&
+          navigator.canShare({
+            files: [file]
+          })
+        ) {
+
+          try {
+
+            await navigator.share({
+
+              title: "🎰 人生ガチャの結果！",
+
+              text: "人生ガチャを回してみた！",
+
+              files: [file]
+
+            });
+
+          } catch (error) {
+
+            /*
+             * ユーザーが共有画面を閉じただけなら
+             * エラー表示しない。
+             */
+
+            console.log("シェアをキャンセルしました");
+
+          }
+
+        } else {
+
+          /*
+           * 画像共有に対応していない環境
+           * → 画像を保存できるようにする
+           */
+
+          const link = document.createElement("a");
+
+          link.download = "人生ガチャ_結果.png";
+
+          link.href = canvas.toDataURL("image/png");
+
+          link.click();
+
+        }
+
+
+        shareBtn.disabled = false;
+
+      });
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "画像の作成に失敗しました💦\nもう一度試してみてね！"
+      );
+
+      shareBtn.style.display = "";
+
+      shareBtn.disabled = false;
+
+    }
+
+  });
+
 }
 
 
-/* ========================================
-   🚀 初期状態
-======================================== */
+/* =========================
+   レア度
+========================= */
 
-result.innerHTML = `
-  <div style="
-    text-align:center;
-    opacity:0.7;
-    padding:20px;
-  ">
-    🎰 ガチャを回して<br>
-    あなたの人生を占おう！
-  </div>
-`;
+function getRarity(luck) {
+
+  switch (luck) {
+
+    case "GOD":
+      return "🌈 神の人生";
+
+    case "SSS":
+      return "🔥 超激レア";
+
+    case "SSR":
+      return "🔥 激レア";
+
+    case "SR":
+      return "✨ レア";
+
+    case "S":
+      return "✨ かなり良い";
+
+    default:
+      return "✨ これからの人生";
+
+  }
+
+}
+
+
+/* =========================
+   人生ランク
+========================= */
+
+function getRank(luck) {
+
+  switch (luck) {
+
+    case "GOD":
+      return "S";
+
+    case "SSS":
+      return "S";
+
+    case "SSR":
+      return "A";
+
+    case "SR":
+      return "A";
+
+    case "S":
+      return "B";
+
+    default:
+      return "D";
+
+  }
+
+}
+
+
+/* =========================
+   人生スコア
+========================= */
+
+function getScore(luck) {
+
+  switch (luck) {
+
+    case "GOD":
+      return 100;
+
+    case "SSS":
+      return randomNumber(90, 99);
+
+    case "SSR":
+      return randomNumber(80, 95);
+
+    case "SR":
+      return randomNumber(70, 89);
+
+    case "S":
+      return randomNumber(60, 79);
+
+    default:
+      return randomNumber(20, 59);
+
+  }
+
+}
+
+
+/* =========================
+   メッセージ
+========================= */
+
+function getMessage(luck) {
+
+  switch (luck) {
+
+    case "GOD":
+      return "🌈✨ 神に選ばれし者！";
+
+    case "SSS":
+      return "🔥✨ 伝説級の人生！";
+
+    case "SSR":
+      return "😎✨ かなり良い人生";
+
+    case "SR":
+      return "✨✨ かなり期待できる！";
+
+    case "S":
+      return "💪✨ ここから人生逆転！";
+
+    default:
+      return "🔥✨ まだまだこれから！";
+
+  }
+
+}
+
+
+/* =========================
+   ランダム
+========================= */
+
+function random(list) {
+
+  return list[
+    Math.floor(Math.random() * list.length)
+  ];
+
+}
+
+
+function randomNumber(min, max) {
+
+  return Math.floor(
+    Math.random() * (max - min + 1)
+  ) + min;
+
+}
+
+
+/* =========================
+   待機
+========================= */
+
+function wait(ms) {
+
+  return new Promise(resolve => {
+
+    setTimeout(resolve, ms);
+
+  });
+
+}
