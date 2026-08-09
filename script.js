@@ -198,7 +198,7 @@ async function playGacha() {
 
     document.getElementById("count").textContent = i;
 
-    await wait(1000);
+    await wait(700);
   }
 
   const luck = random(lucks);
@@ -425,7 +425,7 @@ async function slotEffect(list, times) {
 
     value = random(list);
 
-    await wait(70);
+    await wait(35);
   }
 
   return value;
