@@ -471,25 +471,72 @@ function setupShare(
   rarity
 ) {
 
-  shareBtn.onclick = async () => {
+shareBtn.onclick = async () => {
 
-    const text = `
-🎰 人生ガチャの結果！
+  const result = document.getElementById("result");
 
-👶 出身：${birth}
-💼 職業：${job}
-💰 年収：${income}
-💕 恋愛：${love}
+  // 共有ボタンを一時的に隠す
+  shareBtn.style.display = "none";
 
-🍀 運勢：${luck}
-✨ レア度：${rarity}
+  try {
 
-🏆 人生ランク：${rank}
-⭐ 人生スコア：${score} / 100
+    const canvas = await html2canvas(result, {
+      backgroundColor: "#111111",
+      scale: 2,
+      useCORS: true
+    });
 
-🎰 あなたも人生ガチャを回してみて！
-`;
+    canvas.toBlob(async (blob) => {
 
+      if (!blob) {
+        alert("画像の作成に失敗しました💦");
+        shareBtn.style.display = "";
+        return;
+      }
+
+      const file = new File(
+        [blob],
+        "人生ガチャ_結果.png",
+        { type: "image/png" }
+      );
+
+      // iPhoneなどで画像ファイルを共有
+      if (
+        navigator.share &&
+        navigator.canShare &&
+        navigator.canShare({ files: [file] })
+      ) {
+
+        await navigator.share({
+          title: "🎰 人生ガチャの結果！",
+          text: "人生ガチャを回してみた！",
+          files: [file]
+        });
+
+      } else {
+
+        // 画像共有に対応していない場合
+        const link = document.createElement("a");
+        link.download = "人生ガチャ_結果.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+
+      }
+
+      shareBtn.style.display = "";
+
+    });
+
+  } catch (error) {
+
+    console.error(error);
+    alert("画像の作成に失敗しました💦");
+    shareBtn.style.display = "";
+
+  }
+
+};
+  
     if (navigator.share) {
 
       try {
